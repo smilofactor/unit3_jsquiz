@@ -13,11 +13,10 @@ $(document).ready(function() {
         correct: false },
         {answer: 'Answer 2 for Question 1',
         correct: true}
-        ]},
-
-    {question: 'Question 2',
+        ]}, {
+      question: 'Question 2',
       allanswers: [
-      {answer: 'Answer 1 for Question 2',
+        {answer: 'Answer 1 for Question 2',
         correct: true},
         {answer: 'Answer 2 for Question 2',
         correct: false}
@@ -46,7 +45,7 @@ $(document).ready(function() {
     $setH2.text(questionArray.question + ' in loop');
 
     for (var i = 0; i < questionArray.allanswers.length; i++) {
-      $IDanswer_list.append("<li><input type='radio' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
+      $IDanswer_list.append("<li><input type='radio' name='answerclick' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
 
       //$('#answer_list').append("<li><input type='radio' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
     }
@@ -103,12 +102,22 @@ $(document).ready(function() {
 
   });
 
-  $('.check_answer').on('click', function() {
-    var inputID = $('input[type=radio][checked]').val();
-    var questionID = $('#question_header').data('page-num');
-    var questionArrayAnswers = question_array[questionID].allanswers;
 
-    alert(inputID);
+function parseInputID(retVal) {
+	var inputID = $('input[type=radio]:checked').data('question-id');
+	return parseInt(inputID.split("_")[retVal], 10);
+}
+
+
+
+  $('.check_answer').on('click', function() {
+
+    var answerID = parseInputID(1);
+    var questionID = parseInputID(0);
+   
+    var arrayAnswer = question_array[questionID].allanswers[answerID].correct;
+
+    alert(answerID + " " + arrayAnswer);
 
   });
 
