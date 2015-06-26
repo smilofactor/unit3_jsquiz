@@ -2,8 +2,8 @@ $(document).ready(function() {
   "use strict";
   var directionID;
 
-  var $answer_list = $('#answer_list');
-  var $question_header = $('#question_header');
+  var $IDanswer_list = $('#answer_list');
+  var $IDquestion_header = $('#question_header');
   var $setH2 = $('h2');
 
   var question_array = [{
@@ -25,7 +25,7 @@ $(document).ready(function() {
   ];
 
   function setPage(pageNum) {
-   $question_header.data('page-num', pageNum).attr('data-page-num', pageNum);
+   $IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
    
    //$('#question_header').data('page-num', pageNum).attr('data-page-num', pageNum);
    //$('#question_header').empty().attr('data-page-num', pageNum);
@@ -33,7 +33,7 @@ $(document).ready(function() {
   };
 
   function clearAnswerList(pageNum){
-   $answer_list.empty().html(questionsLoop(pageNum));
+   $IDanswer_list.empty().html(questionsLoop(pageNum));
 
   //$answer_list.empty().html(questionsLoop(pageNum));
   //$('#answer_list').empty().html(questionsLoop(pageNum));
@@ -46,7 +46,7 @@ $(document).ready(function() {
     $setH2.text(questionArray.question + ' in loop');
 
     for (var i = 0; i < questionArray.allanswers.length; i++) {
-      $answer_list.append("<li><input type='radio' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
+      $IDanswer_list.append("<li><input type='radio' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
 
       //$('#answer_list').append("<li><input type='radio' class='input_answer' data-question-id=" + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
     }
@@ -82,11 +82,10 @@ $(document).ready(function() {
       } else {
 
         $setH2.text('Introduction');
-        //$('#answer_list').empty();
 
-        $answer_list.find('li').remove();
+        $IDanswer_list.find('li').remove();
         //$('#answer_list').find('li').remove();
-
+        //$('#answer_list').empty();
       }
     };
 
@@ -94,7 +93,7 @@ $(document).ready(function() {
 
   $('.direction_button').on('click', function() {
     var buttonID = $(this).data('buttonid');
-    var pageID = $('#question_header').data('page-num');
+    var pageID = $IDquestion_header.data('page-num');
 
     directionID = ({
       pageID: pageID,
