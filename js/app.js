@@ -32,12 +32,13 @@ $(document).ready(function() {
 
     function pageCount(directionID) {
         var pageLimit = question_array.length;
+        var buttonDirect = directionID.buttonID;
         var pageNum = directionID.pageID;
 
-        if (pageNum === 0 && directionID.buttonID === 'back') {
+        if (pageNum === 0 && buttonDirect === 'back') {
             alert('Already at start of quiz');
 
-        } else if (directionID.buttonID === 'forward') {
+        } else if (buttonDirect === 'forward') {
             if (pageNum < pageLimit) {
 
                 pageNum += 1;
