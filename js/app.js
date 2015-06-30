@@ -99,14 +99,6 @@ function pageCount(directionID) {
 
   });
 
-
-/* 
-function parseInputID(retVal) {
-	var inputID = $('input[type=radio]:checked').data('question-id');
-	return parseInt(inputID.split("_")[retVal], 10);
-}
-*/
-
  
 var parsedIDConstruct = function(answerID, questionID) {
 	this.answerID = answerID;
@@ -114,8 +106,7 @@ var parsedIDConstruct = function(answerID, questionID) {
 }
   
 
-parsedIDConstruct.prototype = {
-	
+parsedIDConstruct.prototype = {	
 	inputIDValues: function() {
      var inputID = $('input[type=radio]:checked').data('question-id');  
       var VID = inputID.split("_");
