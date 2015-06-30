@@ -1,6 +1,7 @@
 "use strict";
 $(document).ready(function() {
 
+
 var directionID,
 
 question_array = [{
@@ -86,13 +87,6 @@ function pageCount(directionID) {
   };
 
 
-
-function parseInputID(retVal) {
-	var inputID = $('input[type=radio]:checked').data('question-id');
-	return parseInt(inputID.split("_")[retVal], 10);
-}
-
-
   $('.direction_button').on('click', function() {
     var buttonID = $(this).data('buttonid');
     var pageID = configMap.$IDquestion_header.data('page-num');
@@ -106,13 +100,41 @@ function parseInputID(retVal) {
   });
 
 
+/* 
+function parseInputID(retVal) {
+	var inputID = $('input[type=radio]:checked').data('question-id');
+	return parseInt(inputID.split("_")[retVal], 10);
+}
+*/
+
+ 
+var parsedIDConstruct = function(answerID, questionID) {
+	this.answerID = answerID;
+	this.questionID = questionID;
+}
+  
+
+parsedIDConstruct.prototype = {
+	
+	inputIDValues: function() {
+     var inputID = $('input[type=radio]:checked').data('question-id');  
+      var VID = inputID.split("_");
+      this.answerID = parseInt(VID[0], 10);
+      this.questionID = parseInt(VID[1], 10);
+	}
+
+}
+
+
   $('.check_answer').on('click', function() {
 
-    var answerID = parseInputID(1);
-    var questionID = parseInputID(0);
-   
-    var arrayAnswer = question_array[questionID].allanswers[answerID].correct;
+    var parsedID = new parsedIDConstruct();
+    parsedID.inputIDValues();
 
+    var answerID = parsedID.answerID;
+    var questionID = parsedID.questionID;
+
+    var arrayAnswer = question_array[questionID].allanswers[answerID].correct;
     alert(answerID + " " + arrayAnswer);
 
   });
