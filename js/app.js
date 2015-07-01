@@ -25,8 +25,7 @@ configMap = {
   $IDanswer_list: $('#answer_list'),
   $IDquestion_header: $('#question_header'),
   $setH2: $('h2'),
-  listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' data-question-id="
-
+  listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id="
 };
 
 function setPage(pageNum) {
@@ -38,7 +37,7 @@ function clearAnswerList(pageNum){
 };
 
 function questionsLoop(pageNum) {
-    var questionID = pageNum - 1
+    var questionID = pageNum - 1;
     var questionArray = question_array[questionID];
     configMap.$setH2.text(questionArray.question + ' in loop');
 
@@ -64,7 +63,9 @@ function pageCount(directionID) {
         clearAnswerList(pageNum);
 
       } else {
+      
         alert("Quiz over");
+      
       }
 
     } else {
@@ -79,8 +80,8 @@ function pageCount(directionID) {
       } else {
 
         configMap.$setH2.text('Introduction');
-
         configMap.$IDanswer_list.find('li').remove();
+      
       }
     };
 
@@ -106,7 +107,7 @@ var parsedIDConstruct = function(answerID, questionID) {
 }
   
 
-parsedIDConstruct.prototype = {	
+parsedIDConstruct.prototype = {
 	inputIDValues: function() {
      var inputID = $('input[type=radio]:checked').data('question-id');  
       var VID = inputID.split("_");
