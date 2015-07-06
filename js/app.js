@@ -3,21 +3,29 @@ $(document).ready(function() {
 
 var directionID,
 
-question_array = [{
-    question: 'Question 1',
-    allanswers: [
-    {answer: 'Answer 1 for Question 1',
+question_array = [
+  {question: 'Question 1',
+   allanswers: [
+     {answer: 'Answer 1 for Question 1',
       correct: false },
-      {answer: 'Answer 2 for Question 1',
+     {answer: 'Answer 2 for Question 1',
       correct: true}
-      ]}, {
-    question: 'Question 2',
-    allanswers: [
-      {answer: 'Answer 1 for Question 2',
+   ]},
+  {question: 'Question 2',
+   allanswers: [
+     {answer: 'Answer 1 for Question 2',
       correct: true},
-      {answer: 'Answer 2 for Question 2',
+     {answer: 'Answer 2 for Question 2',
+      correct: false}
+   ]},
+  {question: 'Question 3',
+   allanswers: [
+     {answer: 'Answer 1 for Question 3',
+      correct: true},
+     {answer: 'Answer 2 for Question 3',
       correct: false}
       ]}
+        
 ],
 
 configMap = {
@@ -27,30 +35,102 @@ configMap = {
   listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id="
 },
 
-questionObject = {};
+questionObject = {},
 
+    questionLocalStorage = function(questionObject) { 
+  this.questionObject = questionObject;
+}
+
+  questionLocalStorage.prototype = {  
+  questionStorage: function() {
+    if (localStorage.getItem("questionCollection") === null) {
+      localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+    } else {
+      localStorage.removeItem("questionCollection");
+    }
+  }
+};
+  var questionStore = new questionLocalStorage();
+  questionStore.questionStorage();
+ 
+  
+function checkAnswers() {
+  var answerKey,
+      correctKey,
+      answerKeyObject = {},
+      questionCO = JSON.parse(localStorage.getItem("questionCollection"));
+ 
+   for (var responseValue in questionCO) {
+  
+    answerKey = questionCO[responseValue];
+    correctKey = question_array[responseValue].allanswers[answerKey].correct;
+    answerKeyObject[responseValue] = correctKey;
+    
+  }
+
+  //console.log("questionCO: " + JSON.stringify(answerKeyObject));
+  
+  }
+
+  
 function setPage(pageNum) {
 	configMap.$IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
 };
 
+  
 function clearAnswerList(pageNum){
 	configMap.$IDanswer_list.empty().html(questionsLoop(pageNum));
 };
 
+  
+//Continue in this function
 function questionsLoop(pageNum) {
     var
+    i = 0,
     questionID = pageNum - 1,
-    questionArray = question_array[questionID];
+    questionCO = JSON.parse(localStorage.getItem("questionCollection")),
+    questionArray = question_array[questionID],
+    setCheckboxID,
+    setCheckbox;
   
     configMap.$setH2.text(questionArray.question + ' in loop');
-
-    for (var i = 0; i < questionArray.allanswers.length; i++) {
+  
+    for (i; i < questionArray.allanswers.length; i++) {
     	configMap.$IDanswer_list.append(configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
+      
+      console.log("questionsLoop\n" + "questionObject: " + questionObject[questionID] + "\n" + "questionID: " + questionID + "\n" + "questionArray: " + questionArray.allanswers[i].answer + "\n" + "i: " + i + "\n" + "pageNum: " + pageNum);
+      
 
+      if (questionCO === undefined || questionCO == null) {
+ 
+      //localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+      console.log("if questionCO: " + questionCO);
+      
+      } else {
+
+      	//setCheckbox = answerSelected[setCheckboxID].checked=true;
+        if (setCheckboxID === undefined) {
+        	//Do some stuff
+        	//Not sure what yet
+        } else { 
+        setCheckboxID = questionCO[questionID];
+        console.log("ul li: " + $('ul li'));
+        //$('ul li').find('.input_answer')[questionCO[questionID]].attr('checked');
+        //console.log("else ul find li selection: " + $('ul li').find('.input_answer')[setCheckboxID].attr('checked'));
+        //console.log("else setCheckboxID: " + setCheckboxID);
+        console.log("else questionCO: " + questionCO[questionID]);
+ 
+        
+        }
+
+
+
+      }
+       
     }
   };
 
-
+  
 function pageCount(directionID) {
 	var 
   pageLimit = question_array.length,
@@ -71,28 +151,25 @@ function pageCount(directionID) {
         clearAnswerList(pageNum);
       
         } else {
-        
-          //alert("Quiz over"); 
-          alert(JSON.stringify(questionObject));
-               
+
+          checkAnswers();
+
         }
 
     } else {
-
       pageNum -= 1;
       setPage(pageNum);
 
       if (pageNum > 0) { clearAnswerList(pageNum); } 
       
       else {
-        
         configMap.$setH2.text('Introduction');
         configMap.$IDanswer_list.find('li').remove();
-        
       }
       
     };
   };
+  
 
   $('.direction_button').on('click', function() {
     var buttonID = $(this).data('buttonid'),
@@ -103,14 +180,14 @@ function pageCount(directionID) {
       buttonID: buttonID
     });
     pageCount(directionID);
-  });
+  });  
   
+
 var parsedIDConstruct = function(answerID, questionID) {
 	this.answerID = answerID;
 	this.questionID = questionID;
 }
-  
-
+ 
 parsedIDConstruct.prototype = {
 	inputIDValues: function() {
     var
@@ -122,6 +199,7 @@ parsedIDConstruct.prototype = {
 	}
 }
 
+
  $('.submit_answer').on('click', function() {
 
     var parsedID = new parsedIDConstruct();
@@ -129,7 +207,8 @@ parsedIDConstruct.prototype = {
     var answerID = parsedID.answerID,
         questionID = parsedID.questionID;
     questionObject[questionID] = answerID;
-
+   localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+   
   });
 
 });
