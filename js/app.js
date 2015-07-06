@@ -35,29 +35,28 @@ configMap = {
   listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id="
 },
 
-questionObject = {};
+questionObject = {},
 
-var 
 randomNum = function() {
  return parseInt(Math.random().toString().split('.')[1]);
 }(),
 
 
-    questionLocalStorage = function(questionObject) { 
+questionLocalStorage = function(questionObject) { 
   this.questionObject = questionObject;
 }
 
   questionLocalStorage.prototype = {
   questionStorage: function() {
+    var questionCO = localStorage.questionCollection;
     questionObject['randomKey'] = randomNum;
-    console.log("questionObject.randomKey: " + questionObject.randomKey);
+    console.log("questionLocalStorage randomNum: " + randomNum);
 
-
-  if ( JSON.parse(localStorage.questionCollection['randomKey']) === undefined ) {
+  if ( questionCO === undefined || JSON.parse(questionCO)['randomKey'] !== randomNum ) {
       localStorage.setItem("questionCollection", JSON.stringify(questionObject));
     }
+  
   }
-
 };
   var questionStore = new questionLocalStorage();
   questionStore.questionStorage();
@@ -68,6 +67,8 @@ function checkAnswers() {
       correctKey,
       answerKeyObject = {},
       questionCO = JSON.parse(localStorage.questionCollection);
+
+    console.log(questionCO);
  
    for (var responseValue in questionCO) {
     if (responseValue !== 'randomKey'){ 
