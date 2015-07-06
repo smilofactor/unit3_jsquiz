@@ -86,6 +86,7 @@ function clearAnswerList(pageNum){
 //Continue in this function
 function questionsLoop(pageNum) {
     var
+    rawHtml = '',
     i = 0,
     questionID = pageNum - 1,
     questionCO = JSON.parse(localStorage.getItem("questionCollection")),
@@ -96,37 +97,13 @@ function questionsLoop(pageNum) {
     configMap.$setH2.text(questionArray.question + ' in loop');
   
     for (i; i < questionArray.allanswers.length; i++) {
-    	configMap.$IDanswer_list.append(configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>");
-      
-      console.log("questionsLoop\n" + "questionObject: " + questionObject[questionID] + "\n" + "questionID: " + questionID + "\n" + "questionArray: " + questionArray.allanswers[i].answer + "\n" + "i: " + i + "\n" + "pageNum: " + pageNum);
-      
-
-      if (questionCO === undefined || questionCO == null) {
- 
-      //localStorage.setItem("questionCollection", JSON.stringify(questionObject));
-      console.log("if questionCO: " + questionCO);
-      
-      } else {
-
-      	//setCheckbox = answerSelected[setCheckboxID].checked=true;
-        if (setCheckboxID === undefined) {
-        	//Do some stuff
-        	//Not sure what yet
-        } else { 
-        setCheckboxID = questionCO[questionID];
-        console.log("ul li: " + $('ul li'));
-        //$('ul li').find('.input_answer')[questionCO[questionID]].attr('checked');
-        //console.log("else ul find li selection: " + $('ul li').find('.input_answer')[setCheckboxID].attr('checked'));
-        //console.log("else setCheckboxID: " + setCheckboxID);
-        console.log("else questionCO: " + questionCO[questionID]);
- 
-        
+        if (questionCO[questionID] === i) { 
+      rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
+      console.log("questionCO: " + questionCO)     
+        } else {
+    	rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
         }
-
-
-
-      }
-       
+    configMap.$IDanswer_list.append(rawHtml);
     }
   };
 
