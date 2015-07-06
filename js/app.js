@@ -68,7 +68,7 @@ function checkAnswers() {
     
   }
 
-  //console.log("questionCO: " + JSON.stringify(answerKeyObject));
+  console.log("questionCO: " + JSON.stringify(answerKeyObject));
   
   }
 
@@ -97,7 +97,7 @@ function questionsLoop(pageNum) {
     configMap.$setH2.text(questionArray.question + ' in loop');
   
     for (i; i < questionArray.allanswers.length; i++) {
-        if (questionCO[questionID] === i) { 
+        if (questionCO[questionID] === i) {
       rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
       console.log("questionCO: " + questionCO)     
         } else {
