@@ -35,20 +35,29 @@ configMap = {
   listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id="
 },
 
-questionObject = {},
+questionObject = {};
+
+var 
+randomNum = function() {
+ return parseInt(Math.random().toString().split('.')[1]);
+}(),
+
 
     questionLocalStorage = function(questionObject) { 
   this.questionObject = questionObject;
 }
 
-  questionLocalStorage.prototype = {  
+  questionLocalStorage.prototype = {
   questionStorage: function() {
-    if (localStorage.getItem("questionCollection") === null) {
+    questionObject['randomKey'] = randomNum;
+    console.log("questionObject.randomKey: " + questionObject.randomKey);
+
+
+  if ( JSON.parse(localStorage.questionCollection['randomKey']) === undefined ) {
       localStorage.setItem("questionCollection", JSON.stringify(questionObject));
-    } else {
-      localStorage.removeItem("questionCollection");
     }
   }
+
 };
   var questionStore = new questionLocalStorage();
   questionStore.questionStorage();
@@ -58,14 +67,15 @@ function checkAnswers() {
   var answerKey,
       correctKey,
       answerKeyObject = {},
-      questionCO = JSON.parse(localStorage.getItem("questionCollection"));
+      questionCO = JSON.parse(localStorage.questionCollection);
  
    for (var responseValue in questionCO) {
+    if (responseValue !== 'randomKey'){ 
   
     answerKey = questionCO[responseValue];
     correctKey = question_array[responseValue].allanswers[answerKey].correct;
     answerKeyObject[responseValue] = correctKey;
-    
+    }
   }
 
   console.log("questionCO: " + JSON.stringify(answerKeyObject));
@@ -89,7 +99,7 @@ function questionsLoop(pageNum) {
     rawHtml = '',
     i = 0,
     questionID = pageNum - 1,
-    questionCO = JSON.parse(localStorage.getItem("questionCollection")),
+    questionCO = JSON.parse(localStorage.questionCollection),
     questionArray = question_array[questionID],
     setCheckboxID,
     setCheckbox;
@@ -97,11 +107,14 @@ function questionsLoop(pageNum) {
     configMap.$setH2.text(questionArray.question + ' in loop');
   
     for (i; i < questionArray.allanswers.length; i++) {
+
         if (questionCO[questionID] === i) {
       rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
-      console.log("questionCO: " + questionCO)     
+      console.log("questionCO: " + questionCO);
+      console.log("if randomNum: " + randomNum);
         } else {
     	rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
+      console.log("else randomNum: " + randomNum);
         }
     configMap.$IDanswer_list.append(rawHtml);
     }
