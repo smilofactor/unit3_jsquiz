@@ -7,23 +7,23 @@ question_array = [
   {question: 'Question 1',
    allanswers: [
      {answer: 'Answer 1 for Question 1',
-      correct: false },
+      correct: 'Incorrect' },
      {answer: 'Answer 2 for Question 1',
-      correct: true}
+      correct: 'Correct'}
    ]},
   {question: 'Question 2',
    allanswers: [
      {answer: 'Answer 1 for Question 2',
-      correct: true},
+      correct: 'Correct'},
      {answer: 'Answer 2 for Question 2',
-      correct: false}
+      correct: 'Incorrect'}
    ]},
   {question: 'Question 3',
    allanswers: [
      {answer: 'Answer 1 for Question 3',
-      correct: true},
+      correct: 'Correct'},
      {answer: 'Answer 2 for Question 3',
-      correct: false}
+      correct: 'Incorrect'}
       ]}
         
 ],
@@ -67,6 +67,8 @@ function checkAnswers() {
 $('.answer_construct, .check_answers').show();
 $('.check_answers').on('click', function() {
   var answerKey,
+      answerConstruct,
+      answerID = 1,
       correctKey,
       answerKeyObject = {},
       questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
@@ -79,6 +81,12 @@ $('.check_answers').on('click', function() {
     } else {
     answerKeyObject[responseValue] = 'No answer';
     }
+
+    answerConstruct = '<li>' + answerID + " " + answerKeyObject[responseValue] + '</li>';
+
+    $('.answer_construct').find('#answer_results').append(answerConstruct);
+    answerID +=1 ;
+
   }
 
   console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
@@ -173,23 +181,20 @@ function pageNav(directionID) {
     } else if ( buttonDirect === 'forward' ) { 
         pageNum += 1;
         setPage(pageNum);
-  
         if ( pageNum <= configMap.pageLimit ) {
           $('.direction_back').show();
           processAnswerList(pageNum);
-
         } else if ( pageNum === configMap.pageLimit+1 ) {
-
           checkAnswers();
+          //$('h2').text('End Of Quiz');
           $('.direction_forward, .quiz_construct').hide();
-
+          $('h2').text('End Of Quiz');
+          $('p').text("Press 'Check Answers' For Your Final Score");
         }
 
     } else {
-
       pageNum -= 1;
       setPage(pageNum);
-
       if (pageNum > 0) { processAnswerList(pageNum); } 
       else {
         configMap.$setH2.text('Introduction');
