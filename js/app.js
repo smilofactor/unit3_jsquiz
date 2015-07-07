@@ -70,18 +70,12 @@ function checkAnswers() {
 
    for (var responseValue in questionCO) {
    answerKey = questionCO[responseValue];
-
     if (answerKey !== null) { 
-
      correctKey = question_array[responseValue].allanswers[answerKey].correct;
      answerKeyObject[responseValue] = correctKey;
-    
     } else {
-
     answerKeyObject[responseValue] = 'No answer';
-    
     }
-
   }
 
   console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
@@ -93,9 +87,35 @@ function setPage(pageNum) {
 	configMap.$IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
 };
 
-  
+
+var parsedIDConstruct = function(answerID, questionID) {
+	this.answerID = answerID;
+	this.questionID = questionID;
+}
+ 
+parsedIDConstruct.prototype = {
+	inputIDValues: function() {
+    var
+     inputID = $('input[type=radio]:checked').data('question-id'),
+     VID = inputID.split("_");
+     this.answerID = parseInt(VID[1], 10);
+     this.questionID = parseInt(VID[0], 10);
+	}
+}
+
+
 function clearAnswerList(pageNum){
 	configMap.$IDanswer_list.empty().html(questionsLoop(pageNum));
+
+   $('ul').find('li').on('click', function() {
+    var parsedID = new parsedIDConstruct();
+    parsedID.inputIDValues();
+    var answerID = parsedID.answerID,
+        questionID = parsedID.questionID;
+    questionObject.answerKey[questionID] = answerID;
+    localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+   
+  });
 };
 
   
@@ -113,11 +133,9 @@ function questionsLoop(pageNum) {
     configMap.$setH2.text(questionArray.question + ' in loop');
 
     if (questionCO[questionID] === undefined || questionCO[questionID] === null) { 
-  
     console.log(questionObject.answerKey);
     questionObject.answerKey[questionID] = null;
     localStorage.setItem("questionCollection", JSON.stringify(questionObject));
-  
   }
  
 
@@ -126,7 +144,7 @@ function questionsLoop(pageNum) {
       if (questionCO[questionID] === i) {
         rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
       } else {
-    	rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
+    	  rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
       }
       configMap.$IDanswer_list.append(rawHtml);
     }     
@@ -140,9 +158,8 @@ function pageCount(directionID) {
   buttonDirect = directionID.buttonID,
   pageNum = directionID.pageID;
 
-  $('.direction_forward').show();
-  $('.check_answers').hide();
-  $('.submit_answer').show();
+  $('.direction_forward, .quiz_construct, .submit_answer').show();
+  $('.answer_construct, .check_answers').hide();
 
     if (pageNum === 0 && buttonDirect === 'back') {
 
@@ -151,34 +168,25 @@ function pageCount(directionID) {
       //already start at quiz
       
     } else if (buttonDirect === 'forward') {
-      
       $('.direction_back').show();
-
       if (pageNum < pageLimit) {
         pageNum += 1;
         setPage(pageNum);
         clearAnswerList(pageNum);
-      
-        } else {
-
-          checkAnswers();
-          $('.check_answers').show();
-          $('.direction_forward').hide();
-          $('.submit_answer').hide();
-
-        }
+      } else {
+        checkAnswers();
+        $('.direction_forward, .submit_answer, .quiz_construct').hide();
+        $('.answer_construct, .check_answers').show();
+      }
 
     } else {
       pageNum -= 1;
       setPage(pageNum);
-
       if (pageNum > 0) { clearAnswerList(pageNum); } 
-      
       else {
         configMap.$setH2.text('Introduction');
         configMap.$IDanswer_list.find('li').remove();
         $('.direction_back').hide();
-
       }
       
     };
@@ -197,6 +205,7 @@ function pageCount(directionID) {
   });  
   
 
+/*
 var parsedIDConstruct = function(answerID, questionID) {
 	this.answerID = answerID;
 	this.questionID = questionID;
@@ -207,9 +216,8 @@ parsedIDConstruct.prototype = {
     var
      inputID = $('input[type=radio]:checked').data('question-id'),
      VID = inputID.split("_");
-    
-      this.answerID = parseInt(VID[1], 10);
-      this.questionID = parseInt(VID[0], 10);
+     this.answerID = parseInt(VID[1], 10);
+     this.questionID = parseInt(VID[0], 10);
 	}
 }
 
@@ -225,5 +233,6 @@ parsedIDConstruct.prototype = {
 
    
   });
+  */
 
 });

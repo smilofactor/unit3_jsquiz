@@ -16,10 +16,23 @@ li {
 }
 
 .direction_back,
-.check_answers {
+.check_answers,
+.answer_construct {
   display: none;
 }
 
 .direction_forward {
+
+}
+
+.direction_back {
+	
+}
+
+.quiz_construct {
+
+}
+
+.answer_construct {
 
 }
