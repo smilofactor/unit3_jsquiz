@@ -46,11 +46,11 @@ questionLocalStorage = function(questionObject) {
   this.questionObject = questionObject;
 }
 
-  questionLocalStorage.prototype = {
-  questionStorage: function() {
-    var questionCO = localStorage.questionCollection;
-    questionObject['randomKey'] = randomNum;
-    console.log("questionLocalStorage randomNum: " + randomNum);
+questionLocalStorage.prototype = {
+questionStorage: function() {
+  var questionCO = localStorage.questionCollection;
+  questionObject['answerKey'] = {};
+  questionObject['randomKey'] = randomNum;
 
   if ( questionCO === undefined || JSON.parse(questionCO)['randomKey'] !== randomNum ) {
       localStorage.setItem("questionCollection", JSON.stringify(questionObject));
@@ -66,10 +66,8 @@ function checkAnswers() {
   var answerKey,
       correctKey,
       answerKeyObject = {},
-      questionCO = JSON.parse(localStorage.questionCollection);
+      questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
 
-    console.log(questionCO);
- 
    for (var responseValue in questionCO) {
     if (responseValue !== 'randomKey'){ 
   
@@ -79,7 +77,7 @@ function checkAnswers() {
     }
   }
 
-  console.log("questionCO: " + JSON.stringify(answerKeyObject));
+  console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
   
   }
 
@@ -100,7 +98,7 @@ function questionsLoop(pageNum) {
     rawHtml = '',
     i = 0,
     questionID = pageNum - 1,
-    questionCO = JSON.parse(localStorage.questionCollection),
+    questionCO = JSON.parse(localStorage.questionCollection)['answerKey'],
     questionArray = question_array[questionID],
     setCheckboxID,
     setCheckbox;
@@ -109,15 +107,12 @@ function questionsLoop(pageNum) {
   
     for (i; i < questionArray.allanswers.length; i++) {
 
-        if (questionCO[questionID] === i) {
-      rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
-      console.log("questionCO: " + questionCO);
-      console.log("if randomNum: " + randomNum);
-        } else {
+      if (questionCO[questionID] === i) {
+        rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
+      } else {
     	rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
-      console.log("else randomNum: " + randomNum);
-        }
-    configMap.$IDanswer_list.append(rawHtml);
+      }
+      configMap.$IDanswer_list.append(rawHtml);
     }
   };
 
@@ -197,8 +192,9 @@ parsedIDConstruct.prototype = {
     parsedID.inputIDValues();
     var answerID = parsedID.answerID,
         questionID = parsedID.questionID;
-    questionObject[questionID] = answerID;
-   localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+    questionObject.answerKey[questionID] = answerID;
+    localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+
    
   });
 
