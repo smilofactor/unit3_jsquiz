@@ -14,3 +14,12 @@ li {
   list-style-type: none;
  //display: inline-block;
 }
+
+.direction_back,
+.check_answers {
+  display: none;
+}
+
+.direction_forward {
+
+}

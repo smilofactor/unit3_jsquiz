@@ -69,12 +69,19 @@ function checkAnswers() {
       questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
 
    for (var responseValue in questionCO) {
-    if (responseValue !== 'randomKey'){ 
-  
-    answerKey = questionCO[responseValue];
-    correctKey = question_array[responseValue].allanswers[answerKey].correct;
-    answerKeyObject[responseValue] = correctKey;
+   answerKey = questionCO[responseValue];
+
+    if (answerKey !== null) { 
+
+     correctKey = question_array[responseValue].allanswers[answerKey].correct;
+     answerKeyObject[responseValue] = correctKey;
+    
+    } else {
+
+    answerKeyObject[responseValue] = 'No answer';
+    
     }
+
   }
 
   console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
@@ -104,7 +111,16 @@ function questionsLoop(pageNum) {
     setCheckbox;
   
     configMap.$setH2.text(questionArray.question + ' in loop');
+
+    if (questionCO[questionID] === undefined || questionCO[questionID] === null) { 
   
+    console.log(questionObject.answerKey);
+    questionObject.answerKey[questionID] = null;
+    localStorage.setItem("questionCollection", JSON.stringify(questionObject));
+  
+  }
+ 
+
     for (i; i < questionArray.allanswers.length; i++) {
 
       if (questionCO[questionID] === i) {
@@ -113,7 +129,8 @@ function questionsLoop(pageNum) {
     	rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
       }
       configMap.$IDanswer_list.append(rawHtml);
-    }
+    }     
+
   };
 
   
@@ -123,6 +140,10 @@ function pageCount(directionID) {
   buttonDirect = directionID.buttonID,
   pageNum = directionID.pageID;
 
+  $('.direction_forward').show();
+  $('.check_answers').hide();
+  $('.submit_answer').show();
+
     if (pageNum === 0 && buttonDirect === 'back') {
 
       //Doing something
@@ -131,6 +152,8 @@ function pageCount(directionID) {
       
     } else if (buttonDirect === 'forward') {
       
+      $('.direction_back').show();
+
       if (pageNum < pageLimit) {
         pageNum += 1;
         setPage(pageNum);
@@ -139,6 +162,9 @@ function pageCount(directionID) {
         } else {
 
           checkAnswers();
+          $('.check_answers').show();
+          $('.direction_forward').hide();
+          $('.submit_answer').hide();
 
         }
 
@@ -151,6 +177,8 @@ function pageCount(directionID) {
       else {
         configMap.$setH2.text('Introduction');
         configMap.$IDanswer_list.find('li').remove();
+        $('.direction_back').hide();
+
       }
       
     };
