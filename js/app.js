@@ -32,7 +32,8 @@ configMap = {
   $IDanswer_list: $('#answer_list'),
   $IDquestion_header: $('#question_header'),
   $setH2: $('h2'),
-  listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id="
+  listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id=",
+  pageLimit: question_array.length
 },
 
 questionObject = {},
@@ -63,6 +64,8 @@ questionStorage: function() {
  
   
 function checkAnswers() {
+$('.answer_construct, .check_answers').show();
+$('.check_answers').on('click', function() {
   var answerKey,
       correctKey,
       answerKeyObject = {},
@@ -80,7 +83,9 @@ function checkAnswers() {
 
   console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
   
-  }
+ })
+
+};
 
   
 function setPage(pageNum) {
@@ -114,7 +119,7 @@ function processAnswerList(pageNum){
         questionID = parsedID.questionID;
     questionObject.answerKey[questionID] = answerID;
     localStorage.setItem("questionCollection", JSON.stringify(questionObject));
-   
+
   });
 };
 
@@ -143,7 +148,7 @@ function questionsLoop(pageNum) {
       if (questionCO[questionID] === i) {
         rawHtml = configMap.listItems_html + questionID + "_" + i + " checked>" + questionArray.allanswers[i].answer + "</li>";
       } else {
-    	  rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
+        rawHtml = configMap.listItems_html + questionID + "_" + i + ">" + questionArray.allanswers[i].answer + "</li>";
       }
       configMap.$IDanswer_list.append(rawHtml);
     }     
@@ -153,38 +158,38 @@ function questionsLoop(pageNum) {
   
 function pageNav(directionID) {
 	var 
-  pageLimit = question_array.length,
-  buttonDirect = directionID.buttonID,
-  pageNum = directionID.pageID;
+    buttonDirect = directionID.buttonID,
+    pageNum = directionID.pageID;
 
-  $('.direction_forward, .quiz_construct').show();
-  $('.answer_construct, .check_answers').hide();
+    $('.direction_forward, .quiz_construct').show();
+    $('.answer_construct, .check_answers').hide();
 
-    if (pageNum === 0 && buttonDirect === 'back') {
+    if ( pageNum === 0 && buttonDirect === 'back' ) {
 
       //Doing something
       //Had an alert stating:
       //already start at quiz
-      
-    } else if (buttonDirect === 'forward') {
 
-      $('.direction_back').show();
-
-      if (pageNum < pageLimit) {
+    } else if ( buttonDirect === 'forward' ) { 
         pageNum += 1;
         setPage(pageNum);
-        processAnswerList(pageNum);
+  
+        if ( pageNum <= configMap.pageLimit ) {
+          $('.direction_back').show();
+          processAnswerList(pageNum);
 
-      } else {
-        pageNum +=1;
-        checkAnswers();
-        $('.direction_forward, .quiz_construct').hide();
-        $('.answer_construct, .check_answers').show();
-      }
+        } else if ( pageNum === configMap.pageLimit+1 ) {
+
+          checkAnswers();
+          $('.direction_forward, .quiz_construct').hide();
+
+        }
 
     } else {
+
       pageNum -= 1;
       setPage(pageNum);
+
       if (pageNum > 0) { processAnswerList(pageNum); } 
       else {
         configMap.$setH2.text('Introduction');
@@ -193,6 +198,7 @@ function pageNav(directionID) {
       }
       
     };
+
   };
   
 
