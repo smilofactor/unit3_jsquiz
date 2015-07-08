@@ -33,6 +33,7 @@ question_array = [
         $IDquestion_header: $('#question_header'),
         $IDAnswerResults: $('.answer_construct').find('#answer_results'),
         $setH2: $('h2'),
+        $scoreValueP: $('.score_value p'),
         listItems_html: '<li><input type=\'radio\' name=\'answerclick\' class=\'input_answer\' style=\'list-style-type: none\' data-question-id=',
         pageLimit: question_array.length
     },
@@ -77,23 +78,43 @@ question_array = [
     //};
 
 
+    function conductScoring(correctCount) {
+            var scoreConstruct,
+                scoreCount = 0,
+                roundedScore;
+
+
+            scoreCount = (correctCount / configMap.pageLimit * 100);
+            roundedScore = Math.round(parseInt(scoreCount));
+            scoreConstruct = ('You got ' + correctCount + ' out of ' + configMap.pageLimit + ' right. Your score is: ' + roundedScore);
+            configMap.$scoreValueP.append(scoreConstruct);
+
+            console.log("conductScoring roundedScore: " + roundedScore);
+
+        };
+
+
     function checkAnswers() {
         $('.answer_construct, .check_answers').show();
         $('.check_answers').one('click', function () {
-            $(this).hide();
-            configMap.$IDAnswerResults.empty();
+
             var answerKey,
             answerConstruct,
+            correctCount = 0,
             answerID = 0,
             correctKey,
             answerKeyObject = {},
-
             questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
+
+            $(this).hide();
+            configMap.$IDAnswerResults.empty();
+
             for (var responseValue in questionCO) {
                 answerKey = questionCO[responseValue];
                 if (answerKey !== null) {
                     correctKey = question_array[responseValue].allanswers[answerKey].correct;
                     answerKeyObject[responseValue] = correctKey;
+                    if (answerKeyObject[responseValue] === 'Correct') { correctCount += 1; }
                 } else {
                     answerKeyObject[responseValue] = 'No answer';
                 }
@@ -103,6 +124,9 @@ question_array = [
                 configMap.$IDAnswerResults.append(answerConstruct);
             }
             console.log('JSON.stringify(answerKeyObject): ' + JSON.stringify(answerKeyObject));
+
+            conductScoring(correctCount);
+
         });
     };
 
@@ -182,7 +206,8 @@ question_array = [
                 checkAnswers();
                 $('.direction_forward, .quiz_construct').hide();
                 configMap.$setH2.text('End Of Quiz');
-                $('p').text('Press \'Check Answers\' For Your Final Score');
+                $('.answer_construct p').first().text('Press \'Check Answers\' For Your Final Score');
+                configMap.$scoreValueP.empty();
             }
         } else {
             pageNum -= 1;
