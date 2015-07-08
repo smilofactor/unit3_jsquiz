@@ -31,6 +31,7 @@ question_array = [
 configMap = {
   $IDanswer_list: $('#answer_list'),
   $IDquestion_header: $('#question_header'),
+  $IDAnswerResults: $('.answer_construct').find('#answer_results'),
   $setH2: $('h2'),
   listItems_html: "<li><input type='radio' name='answerclick' class='input_answer' style='list-style-type: none' data-question-id=",
   pageLimit: question_array.length
@@ -63,12 +64,24 @@ questionStorage: function() {
   questionStore.questionStorage();
  
   
+function setPage(pageNum) {
+	configMap.$IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
+};
+
+
+//function answerNav() {
+
+
+//};
+
+  
 function checkAnswers() {
 $('.answer_construct, .check_answers').show();
 $('.check_answers').on('click', function() {
+  $('.answer_construct > #answer_results').find('li').empty();
   var answerKey,
       answerConstruct,
-      answerID = 1,
+      answerID = 0,
       correctKey,
       answerKeyObject = {},
       questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
@@ -82,23 +95,27 @@ $('.check_answers').on('click', function() {
     answerKeyObject[responseValue] = 'No answer';
     }
 
-    answerConstruct = '<li>' + answerID + " " + answerKeyObject[responseValue] + '</li>';
-
-    $('.answer_construct').find('#answer_results').append(answerConstruct);
     answerID +=1 ;
+    answerConstruct = "<li data-response-id=\"" + answerID + "\">" + answerID + " " + answerKeyObject[responseValue] + "</li>";
+
+    console.log('checkAnswers answerConstruct: ' + answerConstruct);
+    configMap.$IDAnswerResults.append(answerConstruct);
 
   }
 
   console.log("JSON.stringify(answerKeyObject): " + JSON.stringify(answerKeyObject));
   
- })
+ });
 
 };
 
-  
-function setPage(pageNum) {
-	configMap.$IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
-};
+$('.answer_construct > #answer_results').find('li').on('click', function() {
+   //setPage(responseValue);
+   //answerResponseID;
+   //var answerResponseID = $('.answer_construct > #answer_results').find('li').data('response-id');
+   //console.log('.answer_construct: ' + answerResponseID);
+   console.log('Check');
+});
 
 
 var parsedIDConstruct = function(answerID, questionID) {
@@ -185,6 +202,7 @@ function pageNav(directionID) {
           $('.direction_back').show();
           processAnswerList(pageNum);
         } else if ( pageNum === configMap.pageLimit+1 ) {
+          $('.answer_construct > #answer_results').find('li').empty();
           checkAnswers();
           //$('h2').text('End Of Quiz');
           $('.direction_forward, .quiz_construct').hide();
