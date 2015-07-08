@@ -81,7 +81,7 @@ question_array = [
         $('.answer_construct, .check_answers').show();
         $('.check_answers').one('click', function () {
             $(this).hide();
-            $('.answer_construct').find('#answer_results').empty();
+            configMap.$IDAnswerResults.empty();
             var answerKey,
             answerConstruct,
             answerID = 0,
@@ -180,9 +180,8 @@ question_array = [
                 processAnswerList(pageNum);
             } else if (pageNum === configMap.pageLimit + 1) {
                 checkAnswers();
-                //$('h2').text('End Of Quiz');
                 $('.direction_forward, .quiz_construct').hide();
-                $('h2').text('End Of Quiz');
+                configMap.$setH2.text('End Of Quiz');
                 $('p').text('Press \'Check Answers\' For Your Final Score');
             }
         } else {
