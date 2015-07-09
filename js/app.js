@@ -79,17 +79,14 @@ question_array = [
 
 
     function conductScoring(correctCount) {
-            var scoreConstruct,
-                scoreCount = 0,
-                roundedScore;
-
+            var scoreCount = 0,
+                roundedScore,
+                scoreConstruct;
 
             scoreCount = (correctCount / configMap.pageLimit * 100);
             roundedScore = Math.round(parseInt(scoreCount));
             scoreConstruct = ('You got ' + correctCount + ' out of ' + configMap.pageLimit + ' right. Your score is: ' + roundedScore);
             configMap.$scoreValueP.append(scoreConstruct);
-
-            console.log("conductScoring roundedScore: " + roundedScore);
 
         };
 
@@ -98,13 +95,14 @@ question_array = [
         $('.answer_construct, .check_answers').show();
         $('.check_answers').one('click', function () {
 
-            var answerKey,
-            answerConstruct,
-            correctCount = 0,
-            answerID = 0,
+            var 
+            questionCO = JSON.parse(localStorage.questionCollection)['answerKey'],
+            answerKey,
             correctKey,
             answerKeyObject = {},
-            questionCO = JSON.parse(localStorage.questionCollection)['answerKey'];
+            answerID = 0,
+            answerConstruct,
+            correctCount = 0;
 
             $(this).hide();
             configMap.$IDAnswerResults.empty();
@@ -161,13 +159,12 @@ question_array = [
 
     function questionsLoop(pageNum) {
         var
-        rawHtml = '',
-        i = 0,
-        questionID = pageNum - 1,
         questionCO = JSON.parse(localStorage.questionCollection)['answerKey'],
+        questionID = pageNum - 1,
         questionArray = question_array[questionID],
-        setCheckboxID,
-        setCheckbox;
+        i = 0,
+        rawHtml = '';
+
         configMap.$setH2.text(questionArray.question + ' in loop');
         if (questionCO[questionID] === undefined || questionCO[questionID] === null) {
             console.log(questionObject.answerKey);
