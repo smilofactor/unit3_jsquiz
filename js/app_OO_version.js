@@ -32,8 +32,10 @@ var question_array = [
 
 var configMap = {
   quizArray: question_array,
+  $IDanswer_list: $('#answer_list'),  
   $IDquestion_header: $('#question_header'),
-  $setH2: $('h2')
+  $setH2: $('h2'),
+  listItems_html: '<li><input type=\'radio\' name=\'answerclick\' class=\'input_answer\' style=\'list-style-type: none\' data-question-id='
 };
 
 var questionObject = {};
@@ -62,7 +64,14 @@ questionLocalStorage.prototype = {
   var questionStore = new questionLocalStorage();
   questionStore.questionStorage();
 
+function setPage(pageNum) {
+    configMap.$IDquestion_header.data('page-num', pageNum).attr('data-page-num', pageNum);
+    console.log("setPage pageNum: " + pageNum);
+}
+
+
 function QuizApp(button, pageNum) {
+
   this.button = button;
   this.pageNum = 0;
   this.quizTable = configMap.quizArray;
@@ -79,10 +88,12 @@ QuizApp.prototype.QuizDirection = function () {
   $('.answer_construct > #answer_results').find('li').empty();
 
   console.log('QuizApp: ' + this.button + " " + this.pageNum);
+
   if (this.button === 'forward' && this.pageNum <= this.quizLength) {
     console.log('Going: ' + this.button);
     console.log('At page: ' + this.pageNum);
     this.GenerateQuestions();
+    setPage(this.pageNum);
     
   } else if (this.button === 'back' && this.pageNum > 0) {
     console.log('Going: ' + this.button);
@@ -91,36 +102,49 @@ QuizApp.prototype.QuizDirection = function () {
 }
 
 QuizApp.prototype.GenerateQuestions = function () {
-  //console.log(question_array[this.pageNum].question);
   var rawHtml = '';
   var qid = 0;
   var qCollection = JSON.parse(localStorage.questionCollection)['answerKey'];
+  var qColPageNum = qCollection[this.pageNum];
+  var questionArray = this.quizTable[this.pageNum];
   
   configMap.$setH2.text(this.quizTable[this.pageNum].question + ' in loop');
 
+  if (qColPageNum === undefined || qColPageNum === null) {
+      questionObject.answerKey[this.pageNum] =null;
+      localStorage.setItem('questionCollection', JSON.stringify(questionObject));
+  }
   
-  for( qid = 0; qid < (this.questionLength); qid++ ) {
-    console.log('Answer: ' + this.quizTable[this.pageNum].allanswers[qid].answer);
-
-    /*
-    if (qCollection[this.pageNum] === qid) {
+  for( qid; qid < (this.questionLength); qid++ ) {
+    if (qColPageNum === qid) {
+        rawHtml = configMap.listItems_html + this.pageNum + '_' + qid + ' checked>' + questionArray.allanswers[qid].answer + '</li>';
     } else {
-    
+        rawHtml = configMap.listItems_html + this.pageNum + '_' + qid + '>' + questionArray.allanswers[qid].answer + '</li>';
     }
-    */
+    configMap.$IDanswer_list.append(rawHtml);
 
   }
   this.qID = qid;
+  this.selectionListener();
 }
 
 
 QuizApp.prototype.selectionListener = function () {
-  //var inputID = $('input[type=radio]:checked').data('question-id'),
-  //vID = inputID.split('_');
-  //this.answerID = parseInt((vID[1], 10);
-  //this.questionID = parseInt(vID[0], 10);
+  var inputID = $('input[type=radio]:checked').data('question-id');
+  console.log('QuizApp inputID: ' + inputID);
+  var vID = inputID.split('_');
+  var answerID = parseInt((vID[1], 10));
+  var questionID = parseInt((vID[0], 10));
+
+  //configMap.$IDanswer_list.emtpy().html(
   this.answerID = this.qID;
   console.log('selectionListener this.answerID: ' + this.answerID);
+  $('ul').find('li').on('click', function () {
+      console.log('answerID: ' + answerID + 'questionID: ' + questionID);
+
+
+      //localStorage.setItem('questionCollection', JSON.stringify(questionObject));
+  });
 }
 
 
